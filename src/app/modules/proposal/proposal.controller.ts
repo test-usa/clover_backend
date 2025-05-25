@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ProposalService } from "./proposal.service";
 
+// This Proposal create only for private route in LogIn User
 const createProposal = catchAsync(async (req, res) => {
   const result = await ProposalService.createAProposalIntoBD(req.body);
   sendResponse(res, {
@@ -13,6 +14,7 @@ const createProposal = catchAsync(async (req, res) => {
   });
 });
 
+//Global route
 const getAllProposal = catchAsync(async (req, res) => {
   const result = await ProposalService.getAProposalListIntoBD();
   sendResponse(res, {
@@ -23,12 +25,9 @@ const getAllProposal = catchAsync(async (req, res) => {
   });
 });
 
-
-
-
 // This Proposal Status Controler only for private (putProposalStatusControl) route in LogIn User
 const putProposalStatusControl = catchAsync(async (req, res) => {
-    // console.log("proposal find by id", req.params)
+  // console.log("proposal find by id", req.params)
   const result = await ProposalService.proposalStatusChange(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -41,5 +40,5 @@ const putProposalStatusControl = catchAsync(async (req, res) => {
 export const ProposalControllers = {
   createProposal,
   getAllProposal,
-  putProposalStatusControl
+  putProposalStatusControl,
 };
