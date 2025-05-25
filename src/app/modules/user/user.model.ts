@@ -4,7 +4,7 @@ import { TUser } from "./user.interface";
 const userSchema = new Schema<TUser>({
   name: {
     type: String,
-    required: true,
+    required: false,
   },
   email: {
     type: String,
@@ -19,7 +19,8 @@ const userSchema = new Schema<TUser>({
   role: {
     type: String,
     required: true,
-    enum: ["lawyer", "admin", "client"],
+    enum: [ "admin", "client"],
+    default: "client", 
   },
   status: {
     type: String,
