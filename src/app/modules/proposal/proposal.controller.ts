@@ -23,7 +23,23 @@ const getAllProposal = catchAsync(async (req, res) => {
   });
 });
 
+
+
+
+// This Proposal Status Controler only for private (putProposalStatusControl) route in LogIn User
+const putProposalStatusControl = catchAsync(async (req, res) => {
+    // console.log("proposal find by id", req.params)
+  const result = await ProposalService.proposalStatusChange(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Proposal data retrieved successfully",
+    data: result,
+  });
+});
+
 export const ProposalControllers = {
   createProposal,
   getAllProposal,
+  putProposalStatusControl
 };

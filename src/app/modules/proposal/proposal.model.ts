@@ -7,6 +7,10 @@ const proposalSchema = new Schema<TProposal>({
     //     type: String,
     //     required: true
     // },
+  proposalStatus: {
+    type: Boolean,
+    default: true
+  },
   senderUserId: {
     type: String,
     required: true
