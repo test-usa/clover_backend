@@ -1,17 +1,17 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, Document, Model, model } from 'mongoose';
+import { TStripePaymentIntent } from './payment.interface';
 
-const paymentSchema = new Schema(
-  {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    amount: { type: Number, required: true },
-    method: { type: String, enum: ["card", "paypal", "bank"], required: true },
-    status: {
-      type: String,
-      enum: ["pending", "completed", "failed"],
-      default: "pending",
-    },
-  },
-  { timestamps: true }
-);
 
-export const Payment = model("Payment", paymentSchema);
+const StripePaymentIntentSchema: Schema = new Schema<TStripePaymentIntent>({
+  id: { type: String, required: true },
+  amount: { type: Number, required: true },
+  currency: { type: String, required: true },
+  status: { type: String, required: true },
+  client_secret: { type: String, required: true },
+  created: { type: Number, required: true },
+  capture_method: { type: String, required: true },
+  payment_method_types: { type: [String], required: true },
+});
+
+
+export const Payment = model<TStripePaymentIntent>("payment",StripePaymentIntentSchema)

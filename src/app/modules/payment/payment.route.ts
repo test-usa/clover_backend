@@ -1,23 +1,20 @@
-import express from "express";
-import { PaymentController } from "./payment.controller";
-import { validateRequest } from "../../middleWear/validateRequest";
-import { PaymentValidation } from "./payment.validation";
-import auth from "../../middleWear/auth";
-import USER_ROLE from "../../constants/userRole";
+import { Router } from "express";
+import express from 'express'
+import { paymentController } from "./payment.controller";
+const routerRaw = Router();
+const router = Router();
 
-const router = express.Router();
 
-router.post(
-  "/",
-  auth(USER_ROLE.client, USER_ROLE.lawyer),
-  validateRequest(PaymentValidation.createPaymentSchema),
-  PaymentController.createPayment
-);
 
-router.get(
-  "/my-payments",
-  auth(USER_ROLE.client, USER_ROLE.lawyer),
-  PaymentController.getMyPayments
-);
 
-export const PaymentRoutes = router;
+
+router.post('/create-payment', paymentController.createPayment);
+router.post('/refund-payment/:id', paymentController.refundPayment);
+
+// Webhook
+routerRaw.post('/webhook', express.raw({ type: 'application/json' }), paymentController.handleWebhook);
+
+export const PaymentRouters = router;
+export const paymentWebhook = routerRaw;
+
+

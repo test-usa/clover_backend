@@ -1,30 +1,71 @@
-import httpStatus from "http-status";
+import { Request, Response } from "express"
+
+import status from "http-status";
+import { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync";
+import { PaymentServices } from "./payment.service";
 import sendResponse from "../../utils/sendResponse";
-import { PaymentService } from "./payment.service";
 
-const createPayment = catchAsync(async (req, res) => {
-  const result = await PaymentService.createPayment(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Payment created successfully",
-    data: result,
-  });
-});
 
-const getMyPayments = catchAsync(async (req, res) => {
-  const userId = req.user.userId;
-  const result = await PaymentService.getPaymentsByUser(userId);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "User payments retrieved successfully",
-    data: result,
-  });
-});
 
-export const PaymentController = {
-  createPayment,
-  getMyPayments,
-};
+// Create Payment Checkout Session
+export const createPayment = catchAsync(
+      async (req: Request & { user?: JwtPayload }, res: Response) => {
+        const userId = req.user?.userId;
+    
+        const result = await PaymentServices.createPayments(userId, req.body);
+    
+       sendResponse(res, {
+        success: true,
+        statusCode: status.CREATED,
+        message: "Payment created successfully",
+        data: {
+          url: result.url,
+        },
+    });
+       
+      }
+    );
+export const refundPayment = catchAsync(
+      async (req: Request & { user?: JwtPayload }, res: Response) => {
+        const userId = req.user?.userId;
+        const paymentIntentId = req.params.id;
+    
+        const result = await PaymentServices.refundPayment(paymentIntentId);
+    
+       sendResponse(res, {
+        success: true,
+        statusCode: status.CREATED,
+        message: "Payment refund successfully",
+        data:null
+    
+    });
+       
+      }
+    );
+    
+    // Webhook Handler
+    export const handleWebhook = catchAsync(
+      async (req: Request, res: Response) => {
+        
+        const result = await PaymentServices.handleWebhook(req);
+        sendResponse(res, {
+         success: true,
+        statusCode: status.CREATED,
+        message: "Payment created successfully",
+       data: null,
+   });
+      }
+    );
+    
+
+export const paymentController = {
+  
+      handleWebhook,
+      createPayment,
+      refundPayment,
+}
+
+
+
+

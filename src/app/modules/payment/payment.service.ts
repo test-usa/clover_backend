@@ -1,22 +1,117 @@
-import httpStatus from "http-status";
+import Stripe from "stripe";
+import config from "../../config";
+import status from "http-status";
+const stripe = new Stripe(config.stripe_secret_key as string, {
+  typescript: true,
+});
+
+import mongoose from "mongoose";
+import { Request } from "express";
+import app from "../../../app";
 import ApiError from "../../errors/ApiError";
-import { Payment } from "./payment.model";
-import { TPaymentInput } from "./payment.interface";
 
-const createPayment = async (payload: TPaymentInput) => {
-  const payment = await Payment.create(payload);
-  if (!payment) {
-    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Payment creation failed");
+
+// src/modules/payment/payment.services.ts
+
+const createPayments = async (userId: string | undefined, body: any) => {
+  
+  
+
+  const { currency, email, amount, eventId } = body;
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    billing_address_collection: "auto",
+    customer_email: email,
+    expand: ["payment_intent"],
+    line_items: [
+      {
+        price_data: {
+          currency,
+          product_data: { name: "Sample Product" },
+          unit_amount: amount * 100,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url:config.client_url || "http://localhost:3000/success",
+    cancel_url: config.client_url || "http://localhost:3000/cancel",
+    payment_intent_data: {
+      metadata: {
+        enrolledId: body.enrolledId,
+        userId: userId ?? "",
+      },
+    },
+  });
+
+  return { url: session.url };
+};
+
+const handleWebhook = async (req: Request) => {
+  const signature = req.headers["stripe-signature"] as string;
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      signature,
+      config.stripe_webhook_secret as string
+    );
+  } catch (error) {
+    throw new Error(" Webhook signature verification failed.");
   }
-  return payment;
+
+  const eventType = event.type;
+
+  if (eventType === "payment_intent.succeeded") {
+    const data = event.data.object;
+
+    const metadata = data.metadata;
+
+    console.log("PaymentIntent was successful!", data);
+    
+
+    
+   
+  }
+
+
+  
+
+  return { received: true, type: event.type };
 };
 
-const getPaymentsByUser = async (userId: string) => {
-  const payments = await Payment.find({ user: userId });
-  return payments;
+
+const refundPayment = async (paymentIntentId: string) => {
+ 
+    
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    const originalAmount = paymentIntent.amount; 
+
+  
+    const refundAmount = Math.round(originalAmount * 0.95);
+
+    // Create refund
+    const refund = await stripe.refunds.create({
+      payment_intent: paymentIntentId,
+      amount: refundAmount,
+      reason: "requested_by_customer", 
+    });
+    if (!refund) {
+      throw new ApiError(status.BAD_REQUEST, "Refund failed");
+    }
+
+    return refund;
+  
 };
 
-export const PaymentService = {
-  createPayment,
-  getPaymentsByUser,
+
+export const PaymentServices = {
+ 
+  createPayments,
+  handleWebhook,
+  refundPayment,
 };
