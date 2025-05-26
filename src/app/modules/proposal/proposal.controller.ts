@@ -43,7 +43,8 @@ const createProposal = catchAsync(async (req, res) => {
 
 
 
-
+// This route also privite route in LogIn User
+// This function deletes a proposal and its associated payment transaction from the database.
 const deleteProposal = catchAsync(async (req, res) => {
   const result = await ProposalService.deleteAProposalFromBD(req.params.id);
   sendResponse(res, {

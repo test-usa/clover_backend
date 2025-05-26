@@ -37,6 +37,10 @@ const proposalStatusChange = async (id: string) => {
 };
 
 
+
+// This function deletes a proposal and its associated payment transaction from the database.
+// It first checks if the proposal ID is provided, then retrieves the proposal by its ID.
+// This route also privite route in LogIn User
 const deleteAProposalFromBD = async (id: string) => {
   if (!id) throw new ApiError(httpStatus.BAD_REQUEST, "Proposal ID is required");
 
@@ -46,15 +50,31 @@ const deleteAProposalFromBD = async (id: string) => {
     throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete proposal and payment transaction");
 
   // Fetch the sender payment transaction ID from the proposal
-  const senderPaymentTranctionId = await SwapPaymentTransactionServices.getSenderProposalPaymentTranctionInfoFromDB(proposal.swapTransactionId);
-
-
+  const senderPaymentTranctionId = await SwapPaymentTransactionServices.getSenderProposalPaymentTranctionInfoDBFindById(proposal.swapTransactionId);
   // refund the sender payment transaction if neededt
+  //
+  //
+  // This is the ID of the sender payment transaction { senderPaymentTranctionId.senderPaymentTranctionId }
+  // Here you can implement the logic to refund the sender payment transaction if needed
+  //
+  // Note: make sure to handle the refund logic according to your business requirements ***
+  //
+  //
+  //
+  // After refunding, you can delete the swapPaymentTranction from the database
+  //
+  // Delete the sender payment transaction from the database
+  const removeTranction = await SwapPaymentTransactionServices.deleteSenderProposalPaymentTranctionInfoFromDB(proposal.swapTransactionId);
+  // Check if the transaction was successfully deleted
+  if (!removeTranction || !removeTranction._id)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete payment transaction info");
+  // Now delete the proposal from the database
+ 
 
-  // const result = await Proposal.findByIdAndDelete(id);
-  // if (!result || !result._id)
-  //   throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete proposal");
-  return senderPaymentTranctionId;
+  const result = await Proposal.findByIdAndDelete(proposal._id);
+  if (!result || !result._id)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete proposal");
+  return result;
 };
 
 
