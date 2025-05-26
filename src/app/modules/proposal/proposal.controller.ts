@@ -4,6 +4,22 @@ import sendResponse from "../../utils/sendResponse";
 import { ProposalService } from "./proposal.service";
 import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
 
+
+
+//Global route
+const getAllProposal = catchAsync(async (req, res) => {
+  const result = await ProposalService.getAProposalListIntoBD();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Proposal data retrieved successfully",
+    data: result,
+  });
+});
+
+
+
+
 // This Proposal create only for private route in LogIn User
 const createProposal = catchAsync(async (req, res) => {
   // sender payment transaction id - make sure this is a valid id
@@ -28,18 +44,15 @@ const createProposal = catchAsync(async (req, res) => {
 
 
 
-
-//Global route
-const getAllProposal = catchAsync(async (req, res) => {
-  const result = await ProposalService.getAProposalListIntoBD();
+const deleteProposal = catchAsync(async (req, res) => {
+  const result = await ProposalService.deleteAProposalFromBD(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Proposal data retrieved successfully",
+    message: "Proposal data deleted successfully",
     data: result,
   });
-});
-
+})
 
 
 
@@ -62,4 +75,5 @@ export const ProposalControllers = {
   createProposal,
   getAllProposal,
   putProposalStatusControl,
+  deleteProposal
 };
