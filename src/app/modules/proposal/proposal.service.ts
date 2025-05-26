@@ -49,7 +49,7 @@ const deleteAProposalFromBD = async (id: string) => {
   const senderPaymentTranctionId = await SwapPaymentTransactionServices.getSenderProposalPaymentTranctionInfoFromDB(proposal.swapTransactionId);
 
 
-  // refund the sender payment transaction if needed
+  // refund the sender payment transaction if neededt
 
   // const result = await Proposal.findByIdAndDelete(id);
   // if (!result || !result._id)
