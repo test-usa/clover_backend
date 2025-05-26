@@ -4,12 +4,8 @@ import router from "./app/routes";
 import globalErrorHandler from "./app/middleWear/globalErrorHandler";
 import notFound from "./app/middleWear/notFound";
 import cookieParser from "cookie-parser";
-<<<<<<< HEAD
-import { paymentWebhook } from "./app/modules/payment/payment.route";
-
-=======
 import morgan from "morgan";
->>>>>>> search
+import { paymentWebhook } from "./app/modules/payment/payment.route";
 
 const app = express();
 
