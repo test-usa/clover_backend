@@ -1,52 +1,55 @@
 import { Schema, model } from "mongoose";
 import { TProposal } from "./proposal.interface";
 
-
 const proposalSchema = new Schema<TProposal>({
-    // proposalId: {
-    //     type: String,
-    //     required: true
-    // },
+  // proposalId: {
+  //     type: String,
+  //     required: true
+  // },
+  swapTransactionId: {
+    type: String,
+    required: true,
+  },
   proposalStatus: {
     type: Boolean,
-    default: true
+    default: true,
   },
   senderUserId: {
     type: String,
-    required: true
+    required: true,
   },
   senderUserName: {
     type: String,
-    required: true
+    required: true,
   },
   senderOffice: {
     type: String,
-    required: true
+    required: true,
   },
   senderWantOffice: {
     type: String,
-    required: true
+    required: true,
   },
   swapDetails: {
     type: String,
-    required: true
+    required: true,
   },
   stratDate: {
     type: Date,
-    required: true
+    required: true,
   },
   endData: {
     type: Date,
-    required: true
+    required: true,
   },
   associatedDepositeAmount: {
     type: Number,
-    required: true
+    required: true,
   },
   createAt: {
     type: Date,
-    default: Date.now
-  }
-})
+    default: Date.now,
+  },
+});
 
 export const Proposal = model<TProposal>("Proposal", proposalSchema);

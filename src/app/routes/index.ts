@@ -22,7 +22,7 @@ const moduleRoutes = [
   {
     path: "/swap",
     route: SwapRoutes,
-  },
+  }
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

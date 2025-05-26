@@ -13,15 +13,15 @@ const swapPayTranctionSchema = new Schema({
     },
     senderPaymentTranctionStatus: {
         type: Boolean,
-        default: false
+        default: true
     },
     receiverUserId: {
         type: String,
-        required: true
+        default: ""
     },
     receiverPaymentTranctionId: {
         type: String,
-        required: true
+        default: ""
     },
     receiverPaymentTranctionStatus: {
         type: Boolean,

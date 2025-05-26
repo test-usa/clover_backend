@@ -1,5 +1,8 @@
 
 
+
+
+// mongoose schema type
 export interface TSwapPaymentTransaction {
     senderUserId: string;
     senderPaymentTranctionId: string;
@@ -9,4 +12,10 @@ export interface TSwapPaymentTransaction {
     receiverPaymentTranctionStatus: boolean;
     createAt: Date;
     updateAt: Date;
+}
+
+
+export interface senderDto {
+    senderUserId: string;
+    senderPaymentTranctionId: string;
 }

@@ -2,6 +2,7 @@ import { Model } from "mongoose";
 
 export interface TProposal {
   // proposalId: string
+  swapTransactionId: string
   proposalStatus: boolean
   senderUserId: string
   senderUserName: string
