@@ -8,12 +8,13 @@ import multer from "multer";
 import fs from "fs";
 
 cloudinary.config({
-  cloud_name: config.cloudinary_cloud_name,
-  api_key: config.cloudinary_api_key,
-  api_secret: config.cloudinary_api_secret,
+  cloud_name:config.cloudinary_cloud_name,
+  api_key:config.cloudinary_api_key,
+  api_secret:config.cloudinary_api_secret,
 });
 
-export const sendImageToCloudinary = (imageName: string, path: string) => {
+
+export const sendImageToCloudinary = (imageName: string, path: string): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       path,
