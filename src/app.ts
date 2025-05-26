@@ -4,7 +4,6 @@ import router from "./app/routes";
 import globalErrorHandler from "./app/middleWear/globalErrorHandler";
 import notFound from "./app/middleWear/notFound";
 import cookieParser from "cookie-parser";
-import { UserRoutes } from "./app/modules/user/user.route";
 import morgan from "morgan";
 
 const app = express();

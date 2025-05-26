@@ -12,6 +12,7 @@ const createProfile = catchAsync(async (req: Request , res: Response) => {
   payload.skills = payload.skills || "[]";
   payload.wantedSkills = payload.wantedSkills || "[]";
   payload.location = payload.location || "{}";
+  payload.userId = req.user.userId;
 
   const result = await ProfileService.createProfile(payload, filePath as string, req.file?.originalname as string);
 
