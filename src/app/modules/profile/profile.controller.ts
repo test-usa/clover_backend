@@ -6,8 +6,6 @@ import httpStatus from "http-status";
 
 const createProfile = catchAsync(async (req: Request , res: Response) => {
   const filePath = req.file?.path;
-  console.log(req.file)
-  console.log(filePath)
   const payload = JSON.parse(req.body.data)
   payload.skills = payload.skills || "[]";
   payload.wantedSkills = payload.wantedSkills || "[]";
@@ -25,7 +23,7 @@ const createProfile = catchAsync(async (req: Request , res: Response) => {
 });
 
 const getAllProfiles = catchAsync(async (req: Request, res: Response) => {
-  const result = await ProfileService.getAllProfiles();
+  const result = await ProfileService.getAllProfiles(req);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
