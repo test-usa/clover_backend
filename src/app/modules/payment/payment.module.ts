@@ -11,6 +11,7 @@ const StripePaymentIntentSchema: Schema = new Schema<TStripePaymentIntent>({
   created: { type: Number, required: true },
   capture_method: { type: String, required: true },
   payment_method_types: { type: [String], required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 

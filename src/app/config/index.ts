@@ -20,4 +20,5 @@ export default {
   stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
   stripe_secret_key: process.env.STRIPE_SECRET_KEY,
   client_url: process.env.CLIENT_URL,
+  
 };

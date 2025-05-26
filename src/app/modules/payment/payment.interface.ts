@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface TStripePaymentIntent {
     id: string;
     amount: number;
@@ -7,4 +9,5 @@ export interface TStripePaymentIntent {
     created: number;
     capture_method: string;
     payment_method_types: string[];
+    user: Types.ObjectId;
   }

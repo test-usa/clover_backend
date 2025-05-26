@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import { Request } from "express";
 import app from "../../../app";
 import ApiError from "../../errors/ApiError";
+import { Payment } from "./payment.module";
 
 
 // src/modules/payment/payment.services.ts
@@ -71,10 +72,7 @@ const handleWebhook = async (req: Request) => {
     const metadata = data.metadata;
 
     console.log("PaymentIntent was successful!", data);
-    
-
-    
-   
+        
   }
 
 
@@ -109,9 +107,25 @@ const refundPayment = async (paymentIntentId: string) => {
 };
 
 
+
+
+const getUserPayments = async (userId: string) => {
+  const payments = await Payment.find({ user: userId }).sort({ created: -1 });
+
+  const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0);
+
+  return {
+    totalAmount,
+    payments,
+  };
+};
+
+
+
 export const PaymentServices = {
  
   createPayments,
   handleWebhook,
   refundPayment,
+  getUserPayments,
 };
