@@ -8,8 +8,9 @@ export interface TProposal {
   senderOffice: string
   senderWantOffice: string
   swapDetails: string
-  stratDate: string
-  endData: string
-  AssociatedDepositeAmount: number
+  stratDate: Date
+  endData: Date
+  associatedDepositeAmount: number
+  createAt: Date
 }
 

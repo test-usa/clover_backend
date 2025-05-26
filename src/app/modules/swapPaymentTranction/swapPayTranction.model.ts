@@ -1,0 +1,40 @@
+import { model, Schema } from "mongoose";
+import { TSwapPaymentTransaction } from "./swapPayTranction.interface";
+
+
+const swapPayTranctionSchema = new Schema({
+    senderUserId: {
+        type: String,
+        required: true
+    },
+    senderPaymentTranctionId: {
+        type: String,
+        required: true
+    },
+    senderPaymentTranctionStatus: {
+        type: Boolean,
+        default: false
+    },
+    receiverUserId: {
+        type: String,
+        required: true
+    },
+    receiverPaymentTranctionId: {
+        type: String,
+        required: true
+    },
+    receiverPaymentTranctionStatus: {
+        type: Boolean,
+        default: false
+    },
+    createAt: {
+        type: Date,
+        default: Date.now
+    },
+    updateAt: {
+        type: Date,
+        default: Date.now
+    }
+})
+
+export const SwapPaymentTransaction = model<TSwapPaymentTransaction>("SwapPaymentTransaction", swapPayTranctionSchema);

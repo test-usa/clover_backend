@@ -12,10 +12,11 @@ export interface TSwap {
   senderOffer: string;
   senderWantOffer: string;
   swapDetails: string;
-  startDate: string;
-  endData: string;
-  AssociatedDepositeAmount: number;
+  startDate: Date;
+  endData: Date;
+  associatedDepositeAmount: number;
   swapStatus: swapStetus;
   receiverUserId: string;
   receiverUserName: string;
+  createAt: Date;
 }

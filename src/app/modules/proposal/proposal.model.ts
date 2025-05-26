@@ -32,17 +32,21 @@ const proposalSchema = new Schema<TProposal>({
     required: true
   },
   stratDate: {
-    type: String,
+    type: Date,
     required: true
   },
   endData: {
-    type: String,
+    type: Date,
     required: true
   },
-  AssociatedDepositeAmount: {
+  associatedDepositeAmount: {
     type: Number,
     required: true
   },
+  createAt: {
+    type: Date,
+    default: Date.now
+  }
 })
 
 export const Proposal = model<TProposal>("Proposal", proposalSchema);
