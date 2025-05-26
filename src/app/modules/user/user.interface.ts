@@ -4,8 +4,8 @@ import USER_ROLE from "../../constants/userRole";
 export interface TUser {
   email: string;
   password: string;
-  name: string;
-  role: "lawyer" | "admin" | "client";
+  name?: string;
+  role: "admin" | "client";
   status: "in-progress" | "blocked";
   isDeleted: boolean;
 }
