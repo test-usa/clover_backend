@@ -6,7 +6,7 @@ export interface TUser {
   password: string;
   name?: string;
   role: "admin" | "client";
-  status: "in-progress" | "blocked";
+  status: "in-progress" | "blocked" | "active";
   isDeleted: boolean;
 }
 
