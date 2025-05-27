@@ -146,69 +146,38 @@ const refreshToken = async (token: string) => {
   };
 };
 
-// const forgetPassword = async (email: string) => {
-//   // checking if the user exists
-//   console.log(email);
-//   console.log(await User.find());
-//   const user = await User.findOne({ email });
-//   if (!user) {
-//     throw new ApiError(httpStatus.NOT_FOUND, "This user is not found !");
-//   }
-//   // checking if the user is already deleted
-//   const isDeleted = user?.isDeleted;
-//   if (isDeleted) {
-//     throw new ApiError(httpStatus.FORBIDDEN, "This user is deleted !");
-//   }
-
-//   // checking if the user is blocked
-//   const userStatus = user?.status;
-//   if (userStatus === "blocked") {
-//     throw new ApiError(httpStatus.FORBIDDEN, "This user is blocked ! !");
-//   }
-
-//   const jwtPayload = {
-//     userId: user.id,
-//     role: user.role,
-//   };
-
-//   const resetToken = createToken(
-//     jwtPayload,
-//     config.jwt_access_secret as string,
-//     1000 * 60 * 10 // 10 minutes
-//   );
-//   const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken}`;
-//   console.log(resetUILink);
-//   sendEmail(user?.email, resetUILink);
-// };
-
 const forgetPassword = async (email: string) => {
-  // 1. Check if user exists
+  // checking if the user exists
+  console.log(await User.find());
   const user = await User.findOne({ email });
   if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'This user is not found!');
+    throw new ApiError(httpStatus.NOT_FOUND, "This user is not found !");
+  }
+  // checking if the user is already deleted
+  const isDeleted = user?.isDeleted;
+  if (isDeleted) {
+    throw new ApiError(httpStatus.FORBIDDEN, "This user is deleted !");
   }
 
-  // 2. Check if user is deleted or blocked
-  if (user.isDeleted) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'This user is deleted!');
-  }
-  if (user.status === 'blocked') {
-    throw new ApiError(httpStatus.FORBIDDEN, 'This user is blocked!');
+  // checking if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === "blocked") {
+    throw new ApiError(httpStatus.FORBIDDEN, "This user is blocked ! !");
   }
 
-  // 3. Generate OTP
-  const otp = generateOtp(); // e.g., '739105'
-
-  // 4. Store OTP in DB (with timestamp for expiration)
-  await storeOtp(email, otp);
-
-  // 5. Send OTP via email
-  const html = `<p>Your password reset OTP is: <b>${otp}</b><br/>It will expire in 10 minutes.</p>`;
-  await sendEmail(email, html);
-
-  return {
-    message: 'OTP sent to your email. It will expire in 10 minutes.',
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
   };
+
+  const resetToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    1000 * 60 * 10
+  );
+
+  const resetUILink = `${config.reset_pass_ui_link}?id=${user.id}&token=${resetToken}`;
+  sendEmail(user?.email, resetUILink);
 };
 
 export const AuthServices = {
