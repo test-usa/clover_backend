@@ -2,10 +2,10 @@ import { Schema, model } from "mongoose";
 import { TProposal } from "./proposal.interface";
 
 const proposalSchema = new Schema<TProposal>({
-  // proposalId: {
-  //     type: String,
-  //     required: true
-  // },
+  swapId: {
+      type: String,
+      required: true
+  },
   swapTransactionId: {
     type: String,
     required: true,

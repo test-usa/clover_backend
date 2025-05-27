@@ -2,17 +2,35 @@ import httpStatus from "http-status";
 import ApiError from "../../errors/ApiError";
 import { TProposal } from "./proposal.interface";
 import { Proposal } from "./proposal.model";
+import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
+
 
 const createAProposalIntoBD = async (proposalData: TProposal) => {
   const result = await Proposal.create(proposalData);
-  return result;
+  return result;; 
 };
 
+
+// This function checks if a proposal with the given swapId exists in the database.
+const getAProposalFindByUniqueSwapId = async (swapId: string) => {
+  if (!swapId) throw new ApiError(httpStatus.BAD_REQUEST, "Swap ID is required with proposal request to Generate proposal swapId"); 
+  const result = await Proposal.findOne({ swapId: swapId });
+  if (result && result.swapId) return true;
+  return false;
+};
 
 const getAProposalListIntoBD = async () => {
   const result = await Proposal.find();
   return result;
 };
+
+const getAProposalIntoBDFindById = async (id: string) => {
+  if (!id) throw new ApiError(httpStatus.BAD_REQUEST, "Proposal ID is required");
+  const result = await Proposal.findById(id);
+  if (!result || !result._id)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Fetch proposal");
+  return result;
+}
 
 const proposalStatusChange = async (id: string) => {
   const result = await Proposal.findById(id);
@@ -27,8 +45,54 @@ const proposalStatusChange = async (id: string) => {
   return {proposalStatus: result.proposalStatus};
 };
 
+
+
+// This function deletes a proposal and its associated payment transaction from the database.
+// It first checks if the proposal ID is provided, then retrieves the proposal by its ID.
+// This route also privite route in LogIn User
+const deleteAProposalFromBD = async (id: string) => {
+  if (!id) throw new ApiError(httpStatus.BAD_REQUEST, "Proposal ID is required");
+
+  // Before delete proposal, you can also delete the associated payment transaction if needed
+  const proposal = await getAProposalIntoBDFindById(id);
+  if (!proposal || !proposal._id || !proposal.swapTransactionId)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete proposal and payment transaction");
+
+  // Fetch the sender payment transaction ID from the proposal
+  const senderPaymentTranctionId = await SwapPaymentTransactionServices.getSenderProposalPaymentTranctionInfoDBFindById(proposal.swapTransactionId);
+  // refund the sender payment transaction if neededt
+  //
+  //
+  // This is the ID of the sender payment transaction { senderPaymentTranctionId.senderPaymentTranctionId }
+  // Here you can implement the logic to refund the sender payment transaction if needed
+  //
+  // Note: make sure to handle the refund logic according to your business requirements ***
+  //
+  //
+  //
+  // After refunding, you can delete the swapPaymentTranction from the database
+  //
+  // Delete the sender payment transaction from the database
+  const removeTranction = await SwapPaymentTransactionServices.deleteSenderProposalPaymentTranctionInfoFromDB(proposal.swapTransactionId);
+  // Check if the transaction was successfully deleted
+  if (!removeTranction || !removeTranction._id)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete payment transaction info");
+  // Now delete the proposal from the database
+ 
+
+  const result = await Proposal.findByIdAndDelete(proposal._id);
+  if (!result || !result._id)
+    throw new ApiError(httpStatus.NOT_FOUND, "NOT FOUND to Delete proposal");
+  return result;
+};
+
+
+
 export const ProposalService = {
   createAProposalIntoBD,
   getAProposalListIntoBD,
-  proposalStatusChange
+  proposalStatusChange,
+  deleteAProposalFromBD,
+  getAProposalIntoBDFindById,
+  getAProposalFindByUniqueSwapId
 };

@@ -3,7 +3,7 @@ import { TStripePaymentIntent } from './payment.interface';
 
 
 const StripePaymentIntentSchema: Schema = new Schema<TStripePaymentIntent>({
-  id: { type: String, required: true },
+  tranctionId: { type: String, required: true },
   amount: { type: Number, required: true },
   currency: { type: String, required: true },
   status: { type: String, required: true },

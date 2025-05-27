@@ -3,29 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ProposalService } from "./proposal.service";
 import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
-
-// This Proposal create only for private route in LogIn User
-const createProposal = catchAsync(async (req, res) => {
-  // sender payment transaction id - make sure this is a valid id
-  //
-  // write here  payment transaction system logic this area
-  //
-  // Proposal with Swap tranction info save into DB - before sender payment transaction info save into DB
-  const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
-    senderUserId: req.body.senderUserId, // sender user id
-    senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
-  })
-
-  const result = await ProposalService.createAProposalIntoBD({...req.body, swapTransactionId: proposalTranctioninfo._id});
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Proposal data Create successfully",
-    data: result,
-  });
-});
-
-
+import swapIdGenerate from "../../utils/swapid.generate";
 
 
 
@@ -40,6 +18,56 @@ const getAllProposal = catchAsync(async (req, res) => {
   });
 });
 
+
+
+
+// This Proposal create only for private route in LogIn User
+const createProposal = catchAsync(async (req, res) => {
+  // generate a proposal with swap id
+  const swapId = await swapIdGenerate();
+
+
+  // sender payment transaction id - make sure this is a valid id
+  //
+  // write here  payment transaction system logic this area
+
+  
+
+  //
+  // Proposal with Swap tranction info save into DB - before sender payment transaction info save into DB
+
+  const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
+    swapId: swapId as string, // swap id
+    senderUserId: req.body.senderUserId, // sender user id
+    senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
+  })
+  const result = await ProposalService.createAProposalIntoBD({
+    ...req.body, 
+    swapTransactionId: proposalTranctioninfo._id,
+    swapId: swapId // use the generated swapId directly
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Proposal data Create successfully",
+    data: result
+  });
+});
+
+
+
+// This route also privite route in LogIn User
+// This function deletes a proposal and its associated payment transaction from the database.
+const deleteProposal = catchAsync(async (req, res) => {
+  const result = await ProposalService.deleteAProposalFromBD(req.params.id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Proposal data deleted successfully",
+    data: result,
+  });
+})
 
 
 
@@ -62,4 +90,5 @@ export const ProposalControllers = {
   createProposal,
   getAllProposal,
   putProposalStatusControl,
+  deleteProposal
 };
