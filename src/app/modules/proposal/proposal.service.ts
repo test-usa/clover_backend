@@ -4,20 +4,35 @@ import { TProposal } from "./proposal.interface";
 import { Proposal } from "./proposal.model";
 import swapIdGenerate from "../../utils/swapid.generate";
 import { PaymentServices } from "../payment/payment.service";
+import { User } from "../user/user.model";
 
-
+// This function creates a proposal in the database.
 const createAProposalIntoBD = async (proposalData: TProposal) => {
-  // Check if the swapId already exists in the database
+  // // Check if the swapId already exists in the database
    const swapId = await swapIdGenerate();
   if (!swapId) throw new ApiError(httpStatus.BAD_REQUEST, "Swap ID generation failed");
 
 
-   //user  { currency, email, amount, eventId } = body;
-  // const paymentInfo = await PaymentServices.createPayments()  
+  // get user email by senderUserId
+  const userEmail = await User.findById(proposalData.senderUserId, { email: 1, name: 1 });
+  if (!userEmail || !userEmail.email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Sender user email not found");
+  }
 
-  const result = await Proposal.create(proposalData);
-  return result;; 
+  const paymentInfo = await PaymentServices.createPayments(
+    proposalData.senderUserId,
+    { 
+    currency: "usd",
+    email: userEmail?.email,
+    amount: proposalData.paymentAmount,
+    swapId: swapId
+  }, {
+    ...proposalData
+  });
+
+  return paymentInfo;
 };
+
 
 
 // This function checks if a proposal with the given swapId exists in the database.
