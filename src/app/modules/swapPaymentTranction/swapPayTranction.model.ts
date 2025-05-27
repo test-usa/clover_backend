@@ -3,6 +3,10 @@ import { TSwapPaymentTransaction } from "./swapPayTranction.interface";
 
 
 const swapPayTranctionSchema = new Schema({
+    swapId: {
+        type: String,
+        required: true
+    },
     senderUserId: {
         type: String,
         required: true

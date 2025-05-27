@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface TStripePaymentIntent {
-    id: string;
+    tranctionId: string;
     amount: number;
     currency: string;
     status: string;

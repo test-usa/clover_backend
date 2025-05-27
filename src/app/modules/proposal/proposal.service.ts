@@ -4,11 +4,20 @@ import { TProposal } from "./proposal.interface";
 import { Proposal } from "./proposal.model";
 import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
 
+
 const createAProposalIntoBD = async (proposalData: TProposal) => {
   const result = await Proposal.create(proposalData);
-  return result;
+  return result;; 
 };
 
+
+// This function checks if a proposal with the given swapId exists in the database.
+const getAProposalFindByUniqueSwapId = async (swapId: string) => {
+  if (!swapId) throw new ApiError(httpStatus.BAD_REQUEST, "Swap ID is required with proposal request to Generate proposal swapId"); 
+  const result = await Proposal.findOne({ swapId: swapId });
+  if (result && result.swapId) return true;
+  return false;
+};
 
 const getAProposalListIntoBD = async () => {
   const result = await Proposal.find();
@@ -84,5 +93,6 @@ export const ProposalService = {
   getAProposalListIntoBD,
   proposalStatusChange,
   deleteAProposalFromBD,
-  getAProposalIntoBDFindById
+  getAProposalIntoBDFindById,
+  getAProposalFindByUniqueSwapId
 };

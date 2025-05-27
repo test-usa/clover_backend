@@ -16,6 +16,7 @@ export interface TSwapPaymentTransaction {
 
 
 export interface senderDto {
+    swapId: string;
     senderUserId: string;
     senderPaymentTranctionId: string;
 }

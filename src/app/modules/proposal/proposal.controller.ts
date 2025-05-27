@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ProposalService } from "./proposal.service";
 import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
+import swapIdGenerate from "../../utils/swapid.generate";
 
 
 
@@ -22,22 +23,35 @@ const getAllProposal = catchAsync(async (req, res) => {
 
 // This Proposal create only for private route in LogIn User
 const createProposal = catchAsync(async (req, res) => {
+  // generate a proposal with swap id
+  const swapId = await swapIdGenerate();
+
+
   // sender payment transaction id - make sure this is a valid id
   //
   // write here  payment transaction system logic this area
+
+  
+
   //
   // Proposal with Swap tranction info save into DB - before sender payment transaction info save into DB
+
   const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
+    swapId: swapId as string, // swap id
     senderUserId: req.body.senderUserId, // sender user id
     senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
   })
+  const result = await ProposalService.createAProposalIntoBD({
+    ...req.body, 
+    swapTransactionId: proposalTranctioninfo._id,
+    swapId: swapId // use the generated swapId directly
+  });
 
-  const result = await ProposalService.createAProposalIntoBD({...req.body, swapTransactionId: proposalTranctioninfo._id});
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
     message: "Proposal data Create successfully",
-    data: result,
+    data: result
   });
 });
 
