@@ -1,5 +1,6 @@
 import config from "../../config";
 import ApiError from "../../errors/ApiError";
+import { Otp, TOtp } from "../../utils/otp.model";
 import { generateOtp, sendEmail } from "../../utils/sendEmail";
 import { storeOtp } from "../../utils/store.otp";
 import { TUser } from "./user.interface";
@@ -76,8 +77,45 @@ const createAUserIntoDB = async (payload: TUser) => {
   };
 };
 
+const verifyUserEmail = async (payload: TOtp, id: string) => {
+  const existingUser = await User.findById(id);
+  
+  if (!existingUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User with this ID doesn't exist!");
+  }
+
+  if (existingUser.email !== payload.email) {
+    throw new ApiError(httpStatus.CONFLICT, "Email mismatch. Try again!");
+  }
+
+  const otpData = await Otp.findOne({ email: payload.email });
+
+  if (!otpData) {
+    throw new ApiError(httpStatus.NOT_FOUND, "No OTP found for this email.");
+  }
+
+  if (otpData.otp !== payload.otp) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid OTP.");
+  }
+
+  // const now = new Date();
+  // if (otpData.expiresAt && otpData.expiresAt < now) {
+  //   throw new ApiError(httpStatus.GONE, "OTP has expired.");
+  // }
+
+  existingUser.status = "active";
+  await existingUser.save();
+
+  await Otp.deleteOne({ email: payload.email });
+
+  return {
+    message: "Email verified successfully!"
+  };
+};
+
 export const UserServices = {
   getSingleUserFromDB,
   getAllUsersFromDB,
   createAUserIntoDB,
+  verifyUserEmail,
 };

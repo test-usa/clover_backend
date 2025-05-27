@@ -12,5 +12,6 @@ router.post(
   validateRequest(UserValidations.createUserValidationSchema),
   UserControllers.createAUser
 );
+router.post("/verify-email/:id", UserControllers.verifyUserEmail)
 
 export const UserRoutes = router;
