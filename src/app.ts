@@ -24,6 +24,5 @@ app.get("/", (req: Request, res: Response) => {
 app.use(notFound);
 app.use(globalErrorHandler);
 
-// app.use("/api",UserRoutes)
 
 export default app;
