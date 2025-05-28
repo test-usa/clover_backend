@@ -120,7 +120,7 @@ const handleWebhook = async (req: Request) => {
       try{
          await  Payment.findByIdAndUpdate(metadata.tranctionId, {status:PaymentStatus.CANCELLED} )
       }catch(error){
-        throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to update payment status");
+        throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to update payment");
       }
   
 };
