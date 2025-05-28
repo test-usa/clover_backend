@@ -47,7 +47,6 @@ const allowedOrigins = [
   "https://clover-backend-lyh6.onrender.com",
   "http://localhost:3000",
   "http://localhost:5173",
-  "*",
 ];
 // CORS + Body Parser
 app.use(
