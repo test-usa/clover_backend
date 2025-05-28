@@ -10,7 +10,7 @@ const options: swaggerJSDoc.Options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000/api/v1',
+        url: 'https://clover-backend-lyh6.onrender.com/api/v1',
       },
     ],
   },
