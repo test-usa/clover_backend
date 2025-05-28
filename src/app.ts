@@ -43,12 +43,24 @@ import { paymentWebhook } from "./app/modules/payment/payment.route";
 import { swaggerSpec } from "./app/docs";
 
 const app = express();
+
+// Middlewares
+// app.use(cors({
+//   origin: '*', // allow all origins
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // optional: specify allowed methods
+//   allowedHeaders: ['Content-Type', 'Authorization'], // optional: specify allowed headers
+// }));
+app.use('/api/v1/payment/',paymentWebhook)
+
+const allowedOrigins = ['https://clover-backend-lyh6.onrender.com'];
+
 const allowedOrigins = [
   "https://clover-backend-lyh6.onrender.com",
   "http://localhost:3000",
   "http://localhost:5173",
   "*",
 ];
+
 // CORS + Body Parser
 app.use(
   cors({
