@@ -11,7 +11,7 @@ const createAProposalIntoBD = async (proposalData: TProposal) => {
   // // Check if the swapId already exists in the database
    const swapId = await swapIdGenerate();
   if (!swapId) throw new ApiError(httpStatus.BAD_REQUEST, "Swap ID generation failed");
-
+  
 
   // get user email by senderUserId
   const userEmail = await User.findById(proposalData.senderUserId, { email: 1, name: 1 });
@@ -19,7 +19,14 @@ const createAProposalIntoBD = async (proposalData: TProposal) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "Sender user email not found");
   }
 
-  const paymentInfo = await PaymentServices.createPayments(
+  const isCompleted = await Proposal.findOne({swapId:proposalData.swapId, senderUserId: proposalData.senderUserId});
+  
+  
+   
+  let paymentInfo = null;
+
+  if(!isCompleted) {
+     paymentInfo = await PaymentServices.createPayments(
     proposalData.senderUserId,
     { 
     currency: "usd",
@@ -27,8 +34,12 @@ const createAProposalIntoBD = async (proposalData: TProposal) => {
     amount: proposalData.paymentAmount,
     swapId: swapId
   }, {
-    ...proposalData
+    ...proposalData,
   });
+  }
+
+  
+
 
   return paymentInfo;
 };

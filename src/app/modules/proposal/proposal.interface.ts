@@ -13,7 +13,6 @@ export interface TProposal {
   swapDetails: string
   stratDate: Date
   endData: Date
-  associatedDepositeAmount: number
   createAt: Date
 }
 

@@ -25,27 +25,12 @@ const createProposal = catchAsync(async (req, res) => {
  
 
 
-  // sender payment transaction id - make sure this is a valid id
-  //
-  // write here  payment transaction system logic this area
 
-  // const PaymentInfo = await PaymentServices.createPayments({user: req.body.senderUserId, body: {
-  //   amount: req.body.amount, // amount in cents
-  //   currency: "usd", // currency code
-  //   email: req.body.email, // sender email
-  //   eventId: swapId, // swap id
-  // }});
-
-  //
-  // Proposal with Swap tranction info save into DB - before sender payment transaction info save into DB
-
-  // const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
-  //   swapId: swapId as string, // swap id
-  //   senderUserId: req.body.senderUserId, // sender user id
-  //   senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
-  // })
 
   const result = await ProposalService.createAProposalIntoBD(req.body);
+
+
+ 
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

@@ -47,10 +47,6 @@ const proposalSchema = new Schema<TProposal>({
     type: Date,
     required: true,
   },
-  associatedDepositeAmount: {
-    type: Number,
-    required: true,
-  },
   createAt: {
     type: Date,
     default: Date.now,
