@@ -52,7 +52,7 @@ const app = express();
 // }));
 app.use('/api/v1/payment/',paymentWebhook)
 
-const allowedOrigins = ['https://clover-backend-lyh6.onrender.com'];
+
 
 const allowedOrigins = [
   "https://clover-backend-lyh6.onrender.com",
