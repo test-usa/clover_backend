@@ -6,7 +6,7 @@ let server;
 
 async function main() {
   try {
-    await mongoose.connect("mongodb+srv://sakib:sakib@development.hqochfk.mongodb.net/sample_mflix?retryWrites=true&w=majority&appName=development");
+    await mongoose.connect(config.database_url as string);
     
     server = app.listen(config.port, () => {
       console.log(`Legalmate is litening from port ${config.port}`);
