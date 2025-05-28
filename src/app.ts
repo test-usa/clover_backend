@@ -49,10 +49,10 @@ import { paymentWebhook } from "./app/modules/payment/payment.route";
 import { swaggerSpec } from "./app/docs";
 
 const app = express();
-
+const allowedOrigins = ['https://clover-backend-lyh6.onrender.com'];
 // CORS + Body Parser
 app.use(cors({
-  origin: '*',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
