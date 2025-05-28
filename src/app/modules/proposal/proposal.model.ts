@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { TProposal } from "./proposal.interface";
 
 const proposalSchema = new Schema<TProposal>({
@@ -6,8 +6,12 @@ const proposalSchema = new Schema<TProposal>({
       type: String,
       required: true
   },
-  swapTransactionId: {
+  senderPaymentTranctionId: {
     type: String,
+    required: true,
+  },
+  paymentAmount: {
+    type: Number,
     required: true,
   },
   proposalStatus: {
@@ -15,7 +19,8 @@ const proposalSchema = new Schema<TProposal>({
     default: true,
   },
   senderUserId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   senderUserName: {

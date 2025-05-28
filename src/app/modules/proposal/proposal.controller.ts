@@ -2,8 +2,6 @@ import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { ProposalService } from "./proposal.service";
-import { SwapPaymentTransactionServices } from "../swapPaymentTranction/swapPayTranction.services";
-import swapIdGenerate from "../../utils/swapid.generate";
 
 
 
@@ -24,28 +22,30 @@ const getAllProposal = catchAsync(async (req, res) => {
 // This Proposal create only for private route in LogIn User
 const createProposal = catchAsync(async (req, res) => {
   // generate a proposal with swap id
-  const swapId = await swapIdGenerate();
+ 
 
 
   // sender payment transaction id - make sure this is a valid id
   //
   // write here  payment transaction system logic this area
 
-  
+  // const PaymentInfo = await PaymentServices.createPayments({user: req.body.senderUserId, body: {
+  //   amount: req.body.amount, // amount in cents
+  //   currency: "usd", // currency code
+  //   email: req.body.email, // sender email
+  //   eventId: swapId, // swap id
+  // }});
 
   //
   // Proposal with Swap tranction info save into DB - before sender payment transaction info save into DB
 
-  const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
-    swapId: swapId as string, // swap id
-    senderUserId: req.body.senderUserId, // sender user id
-    senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
-  })
-  const result = await ProposalService.createAProposalIntoBD({
-    ...req.body, 
-    swapTransactionId: proposalTranctioninfo._id,
-    swapId: swapId // use the generated swapId directly
-  });
+  // const proposalTranctioninfo = await SwapPaymentTransactionServices.SenderProposalPaymentTranctionInfoSaveDB({
+  //   swapId: swapId as string, // swap id
+  //   senderUserId: req.body.senderUserId, // sender user id
+  //   senderPaymentTranctionId: "proposalPaymentTranctionId", // sender payment transaction id - make sure this is a valid id
+  // })
+
+  const result = await ProposalService.createAProposalIntoBD(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,

@@ -1,10 +1,12 @@
-import { Model } from "mongoose";
+import { Model, Schema, Types } from "mongoose";
 
 export interface TProposal {
   swapId: string
-  swapTransactionId: string
   proposalStatus: boolean
-  senderUserId: string
+  //proposal created by userA
+  senderUserId: Types.ObjectId
+  senderPaymentTranctionId: string
+  paymentAmount: number
   senderUserName: string
   senderOffice: string
   senderWantOffice: string
