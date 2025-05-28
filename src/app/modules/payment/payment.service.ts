@@ -73,8 +73,7 @@ const handleWebhook = async (req: Request) => {
 
   if (eventType === "payment_intent.succeeded") {
     const data = event.data.object;
-
-    const metadata = data.metadata;
+const metadata = data.metadata;
 
     console.log("PaymentIntent was successful!", data);
 
