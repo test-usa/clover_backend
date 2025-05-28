@@ -180,9 +180,34 @@ const forgetPassword = async (email: string) => {
   sendEmail(user?.email, resetUILink);
 };
 
+const resetPassword = async (payload: { id: string; resetToken: string; newPassword: string }) => {
+  // Verify token
+  if (!verifyToken(payload.resetToken, config.jwt_access_secret as string)) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Invalid or expired token!");
+  }
+
+  // Find the user by ID
+  const user = await User.findById(payload.id);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  // Hash the new password
+  const hashedPassword = await bcrypt.hash(payload.newPassword, 10);
+
+  // Update the password
+  user.password = hashedPassword;
+  await user.save();
+
+  return {
+    message: "Password has been reset successfully",
+  };
+};
+
 export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,
   forgetPassword,
+  resetPassword
 };

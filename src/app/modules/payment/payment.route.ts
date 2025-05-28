@@ -8,7 +8,7 @@ const router = Router();
 
 
 
-router.post('/create-payment', paymentController.createPayment);
+// router.post('/create-payment', paymentController.createPayment);
 router.post('/refund-payment/:id', paymentController.refundPayment);
 
 // Webhook

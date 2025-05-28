@@ -11,15 +11,27 @@ import app from "../../../app";
 import ApiError from "../../errors/ApiError";
 import { Payment } from "./payment.module";
 import { CreatePaymentInput } from "./payment.interface";
+import { TProposal } from "../proposal/proposal.interface";
+import { PaymentStatus, serializeMetadata } from "./payment.constant";
+import { Proposal } from "../proposal/proposal.model";
 
 
 // src/modules/payment/payment.services.ts
 
-const createPayments = async (userId: Types.ObjectId , body: CreatePaymentInput, proposalInfo: any) => {
+const createPayments = async (userId: Types.ObjectId , body: CreatePaymentInput, proposalInfo: TProposal) => {
   
   
 
   const { currency, email, amount, swapId } = body;
+
+
+  const payment = await Payment.create({
+    amount:amount,
+    currency,
+    status:PaymentStatus.PENDING,
+    swapId: swapId,
+    user: userId,
+  });
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
@@ -37,19 +49,26 @@ const createPayments = async (userId: Types.ObjectId , body: CreatePaymentInput,
       },
     ],
     mode: "payment",
-    success_url:config.client_url || "http://localhost:3000/success",
-    cancel_url: config.client_url || "http://localhost:3000/cancel",
+    success_url:config.client_url ,
+    cancel_url: config.client_url ,
     payment_intent_data: {
       metadata: {
-        userId: userId ? userId.toString() : "",
+       
+        senderUserId: userId.toString(),
+      ...serializeMetadata(proposalInfo),
         swapId: swapId,
-        email: email,
-        amount: amount.toString(),
-        
+         tranctionId: payment._id.toString(), // Store payment ID in metadata
        
       },
     },
   });
+  
+
+   if (!session) {
+    throw new ApiError(status.BAD_REQUEST, 'Payment session creation failed');
+  }
+
+  
 
   return { url: session.url };
 };
@@ -66,7 +85,7 @@ const handleWebhook = async (req: Request) => {
       config.stripe_webhook_secret as string
     );
   } catch (error) {
-    throw new Error(" Webhook signature verification failed.");
+    throw new Error(" signature verification failed.");
   }
 
   const eventType = event.type;
@@ -75,11 +94,35 @@ const handleWebhook = async (req: Request) => {
     const data = event.data.object;
 const metadata = data.metadata;
 
-    console.log("PaymentIntent was successful!", data);
+   
 
-    // const result = await Proposal.create(proposalData);
+
+
+    try{ 
+       await  Payment.findByIdAndUpdate(metadata.tranctionId, {status:PaymentStatus.COMPLETED, senderPaymentTranctionId:data.id})
+       
+       const result = await Proposal.create({...metadata, senderPaymentTranctionId:data.id});
+      
+    }catch(error) {
+     
+      throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to create proposal");
+    }
+
         
   }
+
+    if( eventType === "payment_intent.payment_failed") {
+
+         const data = event.data.object;
+
+    const metadata = data.metadata;
+      try{
+         await  Payment.findByIdAndUpdate(metadata.tranctionId, {status:PaymentStatus.CANCELLED} )
+      }catch(error){
+        throw new ApiError(status.INTERNAL_SERVER_ERROR, "Failed to update payment");
+      }
+  
+};
 
 
   
@@ -108,7 +151,11 @@ const refundPayment = async (paymentIntentId: string) => {
       throw new ApiError(status.BAD_REQUEST, "Refund failed");
     }
 
-    return refund;
+
+     const refunded=  await Payment.findOneAndUpdate({ senderPaymentTranctionId: paymentIntentId },{status:PaymentStatus.REFUNDED},{ new: true });
+    
+     
+    return  refunded ;
   
 };
 

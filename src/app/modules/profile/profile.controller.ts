@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 
 const createProfile = catchAsync(async (req: Request , res: Response) => {
   const filePath = req.file?.path;
-  const payload = JSON.parse(req.body.data)
+  const payload = req.body
   payload.skills = payload.skills || "[]";
   payload.wantedSkills = payload.wantedSkills || "[]";
   payload.location = payload.location || "{}";
