@@ -12,6 +12,7 @@ const router = express.Router();
  *   schemas:
  *     Location:
  *       type: object
+ * 
  *       properties:
  *         city:
  *           type: string
