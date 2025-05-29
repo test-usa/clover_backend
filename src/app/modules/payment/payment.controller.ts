@@ -9,24 +9,23 @@ import sendResponse from "../../utils/sendResponse";
 
 
 // Create Payment Checkout Session
-export const createPayment = catchAsync(
-      async (req: Request & { user?: JwtPayload }, res: Response) => {
-        const userId = req.user?.userId;
+// export const createPayment = catchAsync(
+//       async (req: Request & { user?: JwtPayload }, res: Response) => {
+//         const userId = req.user?.userId;
     
-        const result = await PaymentServices.createPayments(userId, req.body);
+//         const result = await PaymentServices.createPayments(userId, req.body);
     
-       sendResponse(res, {
-        success: true,
-        statusCode: status.CREATED,
-        message: "Payment created successfully",
-        data: {
-          url: result.url,
-        },
-    });
+//        sendResponse(res, {
+//         success: true,
+//         statusCode: status.CREATED,
+//         message: "Payment created successfully",
+//         data: {
+//           url: result.url,
+//         },
+//     });
        
-      }
-    );
-    
+//       }
+//     );
 export const refundPayment = catchAsync(
       async (req: Request & { user?: JwtPayload }, res: Response) => {
         const userId = req.user?.userId;
@@ -38,7 +37,7 @@ export const refundPayment = catchAsync(
         success: true,
         statusCode: status.CREATED,
         message: "Payment refund successfully",
-        data:null
+        data:result
     
     });
        
@@ -63,7 +62,7 @@ export const refundPayment = catchAsync(
 export const paymentController = {
   
       handleWebhook,
-      createPayment,
+      // createPayment,
       refundPayment,
 }
 

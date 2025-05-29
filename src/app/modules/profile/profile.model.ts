@@ -50,6 +50,12 @@ const profileSchema = new Schema<IProfile>(
       type: String,
       trim: true,
     },
+    status: {
+      type: String,
+      trim: true,
+      enum: ["non-verified", "verified", "premium"],
+      default: "non-verified"
+    }
   },
   { timestamps: true }
 );

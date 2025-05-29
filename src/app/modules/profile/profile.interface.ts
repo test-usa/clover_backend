@@ -16,6 +16,7 @@ export interface IProfile {
   wantedSkills: string[];
   imageUrl?: string;
   websiteLink?: string;
+  status: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

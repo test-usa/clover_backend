@@ -5,18 +5,15 @@ import { PaymentStatus } from './payment.constant';
 
 
 const StripePaymentIntentSchema: Schema = new Schema<TStripePaymentIntent>({
-  tranctionId: { type: String, required: true },
+  tranctionId: { type: String},
   amount: { type: Number, required: true },
+  senderPaymentTranctionId: { type: String,  },
   currency: { type: String, required: true },
   status: {
     type: String,
     enum: Object.values(PaymentStatus),
     required: true,
   },
-  client_secret: { type: String, required: true },
-  created: { type: Number, required: true },
-  capture_method: { type: String, required: true },
-  payment_method_types: { type: [String], required: true },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   swapId: { type: String, required: true },
 });

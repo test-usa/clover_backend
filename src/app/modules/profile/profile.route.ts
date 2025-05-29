@@ -12,6 +12,7 @@ const router = express.Router();
  *   schemas:
  *     Location:
  *       type: object
+ * 
  *       properties:
  *         city:
  *           type: string
@@ -66,6 +67,13 @@ const router = express.Router();
  *     tags: [Profiles]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: Bearer your-jwt-token
  *     requestBody:
  *       required: true
  *       content:
@@ -92,16 +100,20 @@ const router = express.Router();
  *                 type: array
  *                 items:
  *                   type: string
- *               location.city:
- *                 type: string
- *               location.state:
- *                 type: string
- *               location.country:
- *                 type: string
+ *               location:
+ *                 type: object
+ *                 properties:
+ *                   city:
+ *                     type: string
+ *                   state:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *     responses:
  *       201:
  *         description: Profile created successfully
  */
+
 router.post("/", upload.single("file"), auth(USER_ROLE.client, USER_ROLE.admin), ProfileController.createProfile);
 
 /**
@@ -113,6 +125,11 @@ router.post("/", upload.single("file"), auth(USER_ROLE.client, USER_ROLE.admin),
  *     parameters:
  *       - in: path
  *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: header
+ *         name: Authorization
  *         required: true
  *         schema:
  *           type: string
@@ -142,16 +159,20 @@ router.post("/", upload.single("file"), auth(USER_ROLE.client, USER_ROLE.admin),
  *                 type: array
  *                 items:
  *                   type: string
- *               location.city:
- *                 type: string
- *               location.state:
- *                 type: string
- *               location.country:
- *                 type: string
+ *               location:
+ *                 type: object
+ *                 properties:
+ *                   city:
+ *                     type: string
+ *                   state:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *     responses:
  *       200:
  *         description: Profile updated successfully
  */
+
 router.patch("/:userId", upload.single("file"), ProfileController.updateProfile);
 
 /**
@@ -163,12 +184,6 @@ router.patch("/:userId", upload.single("file"), ProfileController.updateProfile)
  *     responses:
  *       200:
  *         description: List of all profiles
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Profile'
  */
 router.get("/", ProfileController.getAllProfiles);
 
