@@ -89,8 +89,6 @@ const getAllProfiles = async (req: Request) => {
     })
   );
 
-  console.dir(enhancedProfiles);
-
   const modifiedData = enhancedProfiles.map((profile: any, index: number) => {
     const p = {
       profile_id: profile.profile._id,
