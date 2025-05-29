@@ -83,14 +83,33 @@ const getAllProfiles = async (req: Request) => {
 
       return {
         profile,
-        user: profile.userId,
         reviewsGiven,
         reviewsReceived,
       };
     })
   );
 
-  return enhancedProfiles;
+  console.dir(enhancedProfiles);
+
+  const modifiedData = enhancedProfiles.map((profile: any, index: number) => {
+    const p = {
+      profile_id: profile.profile._id,
+      user_id: profile.profile.userId._id,
+      full_name: profile.profile.fullName,
+      profile_status: profile.profile.status,
+      user_status: profile.profile.userId.status,
+      is_available: profile.profile.is_available,
+      image_url: profile.imageUrl,
+      portfolio_link: profile.profile.websiteLink,
+      offer_skills: profile.profile.skills,
+      wanted_skills: profile.profile.wantedSkills,
+      shortBio: profile.profile.shortBio,
+      avgRating: profile.reviewsReceived.reduce((acc:number, curr: any) => (acc + Number(curr.rating)), 0) / profile.reviewsReceived.length || 0,
+    }
+    return p;
+  });
+
+  return modifiedData;
 };
 
 const getSingleProfile = async (userId: string) => {
@@ -98,7 +117,6 @@ const getSingleProfile = async (userId: string) => {
     path: "userId",
     select: "name email role status",
   });
-
   if (!profile) {
     throw new ApiError(httpStatus.NOT_FOUND, "Profile not found");
   }
@@ -115,7 +133,6 @@ const getSingleProfile = async (userId: string) => {
 
   return {
     profile,
-    user: profile.userId,
     reviewsGiven,
     reviewsReceived,
   };

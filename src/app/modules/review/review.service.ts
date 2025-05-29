@@ -33,8 +33,8 @@ const createReview = async (payload: IReview, reviewer: JwtPayload) => {
 
 const getAllReviews = async () => {
   return Review.find()
-    .populate('reviewer', 'fullName email')
-    .populate('reviewedUser', 'fullName email');
+    .populate('reviewer')
+    .populate('reviewedUser');
 };
 
 const getSingleReview = async (reviewId: string) => {
@@ -43,8 +43,8 @@ const getSingleReview = async (reviewId: string) => {
   }
 
   const review = await Review.findById(reviewId)
-    .populate('reviewer', 'fullName email')
-    .populate('reviewedUser', 'fullName email');
+    .populate('reviewer')
+    .populate('reviewedUser');
 
   if (!review) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Review not found');

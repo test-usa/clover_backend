@@ -17,6 +17,7 @@ export interface IProfile {
   imageUrl?: string;
   websiteLink?: string;
   status: string;
+  is_available: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

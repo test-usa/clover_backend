@@ -9,11 +9,7 @@ import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 
 const getAllUsersFromDB = async () => {
-  const result = await User.find({ isDeleted: false })
-    .populate("reviewsGiven")
-    .populate("reviewsReceived")
-    .exec();
-
+  const result = await User.find({ isDeleted: false });
   return result;
 };
 
@@ -26,11 +22,7 @@ const getSingleUserFromDB = async (id: string) => {
 
   if (!deletedOrBlockedUser)
     throw new ApiError(httpStatus.FORBIDDEN, "Failed to Fetch user");
-
-  // Populate virtuals 'reviewsGiven' and 'reviewsReceived'
   const result = await User.findById(id)
-    .populate("reviewsGiven")    // Reviews the user wrote
-    .populate("reviewsReceived") // Reviews the user received
     .exec();
 
   return result;

@@ -55,6 +55,10 @@ const profileSchema = new Schema<IProfile>(
       trim: true,
       enum: ["non-verified", "verified", "premium"],
       default: "non-verified"
+    },
+    is_available: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }
